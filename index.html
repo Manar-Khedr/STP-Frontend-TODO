@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2 id="todos" class="mb-4">TODOs</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h4><i class="bi bi-check-circle-fill text-success"></i> Completed</h4>
+                <div class="input-group mb-3">
+                    <input type="text" id="complete-input-task" class="form-control" placeholder="Add a completed task">
+                    <button class="btn btn-success" type="button" id="complete-add-btn">+</button>
+                </div>
+                <input type="text" id="complete-search" class="form-control mb-3" placeholder="Search completed tasks">
+                <table class="table">
+                    <tbody id="completed-todos"></tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h4><i class="spinner-border text-warning" role="status"></i> Pending</h4>
+                <div class="input-group mb-3">
+                    <input type="text" id="pending-input-task" class="form-control" placeholder="Add a pending task">
+                    <button class="btn btn-warning" type="button" id="pending-add-btn">+</button>
+                </div>
+                <input type="text" id="pending-search" class="form-control mb-3" placeholder="Search pending tasks">
+                <table class="table">
+                    <tbody id="pending-todos"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="todo-script.js"></script>
+</body>
+</html>
