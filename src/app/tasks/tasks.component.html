@@ -1,0 +1,12 @@
+<div class="input-group mb-3">
+  <input type="text" [id]="InputId" class="form-control" [placeholder]="InputPlaceHolder" [(ngModel)]="enteredTask">
+  <button [class]="InputButtonClass" type="button" [id]="InputButtonId" (click)="onAddTask()">+</button>
+</div>
+<input type="text" [id]="SearchId" class="form-control mb-3" [placeholder]="SearchPlaceHolder" (input)="onSearch($event)">
+<table class="table">
+  <tbody [id]="todosId">
+    <tr *ngFor="let task of selectedColumnTask; trackBy: trackByTaskId">
+      <app-task [colType]="task.type" [task]="task" (delete)="onDeleteTask($event)" (move)="onMoveTask($event)"></app-task>
+    </tr>
+  </tbody>
+</table>

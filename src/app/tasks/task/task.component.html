@@ -1,0 +1,12 @@
+<div class="form-check d-flex align-items-center">
+  <input
+    class="form-check-input"
+    type="checkbox"
+    (change)="onMoveTask()"
+    [checked]="colType === 'Completed'"
+  />
+  <label class="form-check-label ms-2">
+    {{ task.todoText }}
+  </label>
+  <i class="bi bi-trash ms-auto cursor-pointer" (click)="onDeleteTask()"></i>
+</div>
