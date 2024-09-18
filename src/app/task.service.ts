@@ -16,7 +16,7 @@ export class TaskService {
   }
 
   private loadTasks() {
-    const tasksCollection = collection(this.firestore, 'tasks');
+    const tasksCollection = collection(this.firestore, 'todoUserTasks');
     collectionData(tasksCollection, { idField: 'id' }).subscribe((tasks: Todo[]) => {
       this.tasksSubject.next(tasks);
     });
@@ -27,17 +27,17 @@ export class TaskService {
   }
 
   addTask(task: Todo) {
-    const tasksCollection = collection(this.firestore, 'tasks');
+    const tasksCollection = collection(this.firestore, 'todoUserTasks');
     setDoc(doc(tasksCollection), task);
   }
 
   deleteTask(id: string) {
-    const taskDoc = doc(this.firestore, `tasks/${id}`);
+    const taskDoc = doc(this.firestore, `todoUserTasks/${id}`);
     deleteDoc(taskDoc);
   }
 
   moveTask(updatedTask: Todo) {
-    const taskDoc = doc(this.firestore, `tasks/${updatedTask.id}`);
+    const taskDoc = doc(this.firestore, `todoUserTasks/${updatedTask.id}`);
     updateDoc(taskDoc, { ...updatedTask });
   }
 }

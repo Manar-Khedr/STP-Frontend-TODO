@@ -54,7 +54,8 @@ export class TasksComponent implements OnChanges {
       const newTask: Todo = {
         id: this.id === '' ? 't' + (this.tasks.length + 1) : this.id,
         type: this.type === '' ? this.colType : this.type,
-        todoText: this.enteredTask
+        todoText: this.enteredTask,
+        userEmail: 'manar@example.com'
       };
       this.taskService.addTask(newTask);
       this.enteredTask = ''; // Clear the input field
