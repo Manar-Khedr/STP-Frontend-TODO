@@ -1,8 +1,11 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, inject } from '@angular/core';
 import { Todo } from '../tasks/task/task.model';
 import { TasksComponent } from '../tasks/tasks.component';
 import { TaskComponent } from '../tasks/task/task.component';
 import { CommonModule } from '@angular/common';
+import { ColumnTypes } from './col-types';
+import { TaskService } from '../task.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-column',
@@ -11,34 +14,16 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [TasksComponent, TaskComponent,CommonModule]
 })
-export class ColumnComponent implements OnChanges {
-  @Input() colType!: string;
-  @Input() tasks: Todo[] = [];
-  columnTasks: Todo[] = [];
+export class ColumnComponent implements OnInit {
+  colTypes = ColumnTypes;
+  tasks: Todo[] = [];
+  private authService = inject(AuthService);
+  userEmail = this.authService.userEmail;
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['colType'] || changes['tasks']) {
-      this.updateTasks();
-    }
-  }
 
-  updateTasks(): void {
-    this.columnTasks = this.tasks.filter(task => task.type === this.colType);
-  }
+  constructor(private taskService: TaskService) {}
 
-  onDeleteTask(id: string) {
-    this.tasks = this.tasks.filter(task => task.id !== id);
-    this.updateTasks(); // Update tasks after deletion
-  }
-
-  onMoveTask(task: Todo) {
-    // Emit the updated task to the parent component
-    const updatedTask = { ...task, type: task.type === 'Completed' ? 'Pending' : 'Completed' };
-    this.tasks = this.tasks.map(t => (t.id === task.id ? updatedTask : t));
-    this.updateTasks(); // Update tasks after moving
-  }
-
-  trackByTaskId(index: number, task: Todo): string {
-    return task.id;
+  ngOnInit() {
+    this.taskService.tasks$.subscribe(tasks => this.tasks = tasks);
   }
 }

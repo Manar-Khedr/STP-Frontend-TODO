@@ -1,0 +1,47 @@
+/* Center the form container */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Full viewport height to center vertically */
+  margin: 0;
+}
+
+/* Style the form title */
+.form-title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Center the example-container within the form */
+.example-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px; /* Adjust based on your preference */
+}
+
+/* Make form fields full-width */
+.full-width {
+  width: 100%;
+}
+
+/* Align buttons in the center */
+.example-button-row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+button {
+  padding: 0.6rem 1.75rem;
+  margin: 0 8px; /* Space between buttons */
+}
+
+/* Remove margin from mat-form-field elements */
+.example-container mat-form-field {
+  margin-bottom: 16px;
+}

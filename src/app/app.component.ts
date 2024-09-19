@@ -1,15 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ColumnComponent } from './column/column.component';
-import { ColumnTypes } from './column/col-type';
 import { TasksComponent } from './tasks/tasks.component';
 import { Todo } from './tasks/task/task.model';
 import { TaskService } from './task.service';
+import { LoginComponent } from "./auth/login/login.component";
+import { ColumnTypes } from './column/col-types';
+import { AuthComponent } from './auth/auth.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,ColumnComponent,TasksComponent],
+  imports: [RouterOutlet, ColumnComponent, TasksComponent, LoginComponent, AuthComponent, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
