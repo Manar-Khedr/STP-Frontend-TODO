@@ -13,6 +13,7 @@ export class TaskComponent {
   @Output() delete = new EventEmitter<string>();
   @Output() move = new EventEmitter<Todo>();
 
+
   get RowClass() {
     return this.colType === 'Completed' ? 'table-success' : 'table-warning';
   }

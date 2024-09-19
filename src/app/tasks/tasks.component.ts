@@ -14,6 +14,7 @@ import { TaskService } from '../task.service';
 })
 export class TasksComponent implements OnChanges {
   @Input() colType!: string;
+  @Input() userEmail!: string;
   @Output() taskMoved = new EventEmitter<Todo>();
 
   enteredTask = '';
@@ -35,9 +36,11 @@ export class TasksComponent implements OnChanges {
 
   get selectedColumnTask() {
     return this.tasks
-      .filter(task => task.type === this.colType)
+      .filter(task => task.type === this.colType) // Filter by column type
+      .filter(task => task.userEmail === this.userEmail) // Filter by user email
       .filter(task => this.searchQuery ? task.todoText.toLowerCase().includes(this.searchQuery.toLowerCase()) : true); // Apply search filter
   }
+  
 
   onDeleteTask(id: string) {
     this.taskService.deleteTask(id);
@@ -54,7 +57,8 @@ export class TasksComponent implements OnChanges {
       const newTask: Todo = {
         id: this.id === '' ? 't' + (this.tasks.length + 1) : this.id,
         type: this.type === '' ? this.colType : this.type,
-        todoText: this.enteredTask
+        todoText: this.enteredTask,
+        userEmail: this.userEmail
       };
       this.taskService.addTask(newTask);
       this.enteredTask = ''; // Clear the input field
@@ -73,8 +77,6 @@ export class TasksComponent implements OnChanges {
     const input = event.target as HTMLInputElement;
     this.searchQuery = input.value;
   }
-  
-
   get InputId() {
     return this.colType + '-input-task';
   }
