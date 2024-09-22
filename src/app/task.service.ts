@@ -1,9 +1,7 @@
-// src/app/task.service.ts
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collectionData, collection, doc, setDoc, deleteDoc, updateDoc } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Todo } from './tasks/task/task.model';
 import { HttpClient } from '@angular/common/http';
+import { Todo } from './tasks/task/task.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,16 +10,22 @@ export class TaskService {
   private tasksSubject = new BehaviorSubject<Todo[]>([]);
   tasks$ = this.tasksSubject.asObservable();
 
-  firebaseUrl = 'https://firestore.googleapis.com/v1/projects/stp-todo/databases/(default)/documents/todoUserTasks';
+  private firebaseUrl = 'https://firestore.googleapis.com/v1/projects/stp-todo/databases/(default)/documents/todoUserTasks';
   private httpClient = inject(HttpClient);
 
-  constructor(private firestore: Firestore) {
+  constructor() {
     this.loadTasks();
   }
 
   private loadTasks() {
-    const tasksCollection = collection(this.firestore, 'todoUserTasks');
-    collectionData(tasksCollection, { idField: 'id' }).subscribe((tasks: Todo[]) => {
+    console.log("fetching data using httpclient");
+    this.httpClient.get<{ documents: any[] }>(this.firebaseUrl).subscribe(response => {
+      const tasks = response.documents ? response.documents.map(doc => ({
+        id: doc.name.split('/').pop(),
+        type: doc.fields.type.stringValue,
+        todoText: doc.fields.todoText.stringValue,
+        userEmail: doc.fields.userEmail.stringValue
+      })) : [];
       this.tasksSubject.next(tasks);
     });
   }
@@ -31,17 +35,39 @@ export class TaskService {
   }
 
   addTask(task: Todo) {
-    const tasksCollection = collection(this.firestore, 'todoUserTasks');
-    setDoc(doc(tasksCollection), task);
+    const body = {
+      fields: {
+        type: { stringValue: task.type },
+        todoText: { stringValue: task.todoText },
+        userEmail: { stringValue: task.userEmail }
+      }
+    };
+    console.log(" adding task: "+body.fields.todoText.stringValue);
+    this.httpClient.post(this.firebaseUrl, body).subscribe(() => {
+      this.loadTasks();
+    });
   }
 
   deleteTask(id: string) {
-    const taskDoc = doc(this.firestore, `todoUserTasks/${id}`);
-    deleteDoc(taskDoc);
+    const url = `${this.firebaseUrl}/${id}`;
+    console.log("delete task task with id: "+id);
+    this.httpClient.delete(url).subscribe(() => {
+      this.loadTasks();
+    });
   }
 
   moveTask(updatedTask: Todo) {
-    const taskDoc = doc(this.firestore, `todoUserTasks/${updatedTask.id}`);
-    updateDoc(taskDoc, { ...updatedTask });
+    const url = `${this.firebaseUrl}/${updatedTask.id}`;
+    const body = {
+      fields: {
+        type: { stringValue: updatedTask.type },
+        todoText: { stringValue: updatedTask.todoText },
+        userEmail: { stringValue: updatedTask.userEmail }
+      }
+    };
+    console.log("move task: "+body.fields.todoText.stringValue+" to type: "+body.fields.type.stringValue);
+    this.httpClient.patch(url, body).subscribe(() => {
+      this.loadTasks();
+    });
   }
 }
