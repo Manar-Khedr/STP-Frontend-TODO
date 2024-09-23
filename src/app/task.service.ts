@@ -7,17 +7,17 @@ import { Todo } from './tasks/task/task.model';
   providedIn: 'root'
 })
 export class TaskService {
-  private tasksSubject = new BehaviorSubject<Todo[]>([]);
+   tasksSubject = new BehaviorSubject<Todo[]>([]);
   tasks$ = this.tasksSubject.asObservable();
 
-  private firebaseUrl = 'https://firestore.googleapis.com/v1/projects/stp-todo/databases/(default)/documents/todoUserTasks';
+   firebaseUrl = 'https://firestore.googleapis.com/v1/projects/stp-todo/databases/(default)/documents/todoUserTasks';
   private httpClient = inject(HttpClient);
 
   constructor() {
-    this.loadTasks();
+    //this.loadTasks(); // remove when testing
   }
 
-  private loadTasks() {
+   loadTasks() {
     console.log("fetching data using httpclient");
     this.httpClient.get<{ documents: any[] }>(this.firebaseUrl).subscribe(response => {
       const tasks = response.documents ? response.documents.map(doc => ({

@@ -16,6 +16,7 @@ import { AuthComponent } from './auth/auth.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent implements OnInit {
+  title = 'Todo List Angular Project';
   colTypes = ColumnTypes;
   tasks: Todo[] = [];
 
