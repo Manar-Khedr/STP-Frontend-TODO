@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, DestroyRef, inject, signal} from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {merge} from 'rxjs';
@@ -10,6 +10,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import { AuthService } from '../auth.service';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { MatStepperModule } from '@angular/material/stepper';
 
 /** @title Form field with error messages */
 @Component({
@@ -17,7 +18,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
   standalone: true,
-  imports: [MatDividerModule, MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatIconModule, CommonModule, RouterLink],
+  imports: [ MatStepperModule ,MatDividerModule, MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatIconModule, CommonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignupComponent {
@@ -26,31 +27,42 @@ export class SignupComponent {
   private auth = inject(AuthService);
 
 
-  form = new FormGroup(
-    {
-      email: new FormControl('', {
-        validators: [ Validators.email, Validators.required],
-      }), // initial
-      password: new FormControl('',{
-        validators: [Validators.required, Validators.minLength(6)]
-      }), // initial value
-      name: new FormControl('', {
-        validators: [Validators.required]})
-    }
-  );
+  // form = new FormGroup(
+  //   {
+  //     email: new FormControl('', {
+  //       validators: [ Validators.email, Validators.required],
+  //     }), // initial
+  //     password: new FormControl('',{
+  //       validators: [Validators.required, Validators.minLength(6)]
+  //     }), // initial value
+  //     name: new FormControl('', {
+  //       validators: [Validators.required]})
+  //   }
+  // );
+
+  form: FormGroup;
 
   errorMessage = signal('');
 
-  constructor() {
-    merge(this.form.controls.email.statusChanges, this.form.controls.email.valueChanges)
-      .pipe(takeUntilDestroyed())
-      .subscribe(() => this.updateErrorMessage());
-  }
+  // constructor() {
+  //   merge(this.form.controls.email.statusChanges, this.form.controls.email.valueChanges)
+  //     .pipe(takeUntilDestroyed())
+  //     .subscribe(() => this.updateErrorMessage());
+  // }
 
-  updateErrorMessage() {
-    if (this.form.controls.email.hasError('required')) {
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]], 
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }  
+
+  updateErrorMessage(): void {
+    const emailControl = this.form.get('email');
+    if (emailControl?.hasError('required')) {
       this.errorMessage.set('You must enter a value');
-    } else if (this.form.controls.email.hasError('email')) {
+    } else if (emailControl?.hasError('email')) {
       this.errorMessage.set('Not a valid email');
     } else {
       this.errorMessage.set('');
@@ -62,13 +74,20 @@ export class SignupComponent {
     this.hide.set(!this.hide());
     event.stopPropagation();
   }
-  get emailIsInvalid(){
-    return this.form.controls.email.touched && this.form.controls.email.dirty && this.form.controls.email.invalid;
+  get emailIsInvalid(): boolean {
+    const emailControl = this.form.get('email');
+    return (emailControl?.touched ?? false) && 
+           (emailControl?.dirty ?? false) && 
+           (emailControl?.invalid ?? false);
   }
-
-  get passwordIsInvalid(){
-    return this.form.controls.password.touched && this.form.controls.password.dirty && this.form.controls.password.invalid;
+  
+  get passwordIsInvalid(): boolean {
+    const passwordControl = this.form.get('password');
+    return (passwordControl?.touched ?? false) && 
+           (passwordControl?.dirty ?? false) && 
+           (passwordControl?.invalid ?? false);
   }
+  
 
   onSubmit(){
     const enteredName = this.form.get('name')?.value!;
@@ -76,6 +95,7 @@ export class SignupComponent {
     const enteredPassword = this.form.get('password')?.value!;
     console.log("entered email: "+ enteredEmail);
     console.log("entered password: "+ enteredPassword);
+    console.log(this.form.value);
 
     if(this.form.valid){
       // enter cred to firebase

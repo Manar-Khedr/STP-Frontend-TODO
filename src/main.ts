@@ -25,6 +25,6 @@ bootstrapApplication(AppComponent, {
     provideAuth(() => getAuth()),
     provideRouter(routes, withComponentInputBinding(), withRouterConfig({
       paramsInheritanceStrategy: 'always'
-  })), provideAnimationsAsync(), provideAnimationsAsync()
+  })), provideAnimationsAsync(), provideAnimationsAsync(), provideAnimationsAsync()
   ]
 }).catch((err) => console.error(err));

@@ -14,7 +14,7 @@ export class TaskService {
   private httpClient = inject(HttpClient);
 
   constructor() {
-    //this.loadTasks(); // remove when testing
+    this.loadTasks(); // remove when testing
   }
 
    loadTasks() {
