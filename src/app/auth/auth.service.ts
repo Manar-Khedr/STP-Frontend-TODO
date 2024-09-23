@@ -13,7 +13,7 @@ export class AuthService {
   // inject auth and httpclient
   private auth = inject(Auth);
   private httpClient = inject(HttpClient);
-  private firestoreUrl = 'https://firestore.googleapis.com/v1/projects/stp-todo/databases/(default)/documents/loginUsers';
+  firestoreUrl = 'https://firestore.googleapis.com/v1/projects/stp-todo/databases/(default)/documents/loginUsers';
   private router = inject(Router);
   userEmail = '';
 
@@ -22,7 +22,7 @@ export class AuthService {
   login(email: string, password: string): Observable<any> {
     console.log("Entered the login function");
     
-    return from(signInWithEmailAndPassword(this.auth, email, password)).pipe(
+    return this.firebaseLogin(email,password).pipe(
       map((userCredentials) => {
         const userId = userCredentials.user.uid;
         const userEmail = userCredentials.user.email;
@@ -37,6 +37,14 @@ export class AuthService {
       }),
       catchError(err => throwError(() => new Error(err.message)))  // Handle any errors during login
     );
+  }
+
+  firebaseLogin(email: string, password: string): Observable<any> {
+    return from(signInWithEmailAndPassword(this.auth, email, password));
+  }
+
+  firebaseSignup(email: string, password: string): Observable<any> {
+    return from(createUserWithEmailAndPassword(this.auth, email, password));
   }
   
 
@@ -66,7 +74,7 @@ export class AuthService {
   }
 
   signup(email: string, name: string, password: string): Observable<any> {
-    return from(createUserWithEmailAndPassword(this.auth, email, password)).pipe(
+    return this.firebaseSignup(email,password).pipe(
       switchMap((userCredentials) => {
         const userId = userCredentials.user.uid;
   
